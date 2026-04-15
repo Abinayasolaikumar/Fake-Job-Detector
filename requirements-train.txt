@@ -1,0 +1,6 @@
+# Extra deps for local training only (model/train_model.py). Not needed for web app / Render.
+-r requirements.txt
+scikit-learn==1.4.2
+pandas==2.2.1
+matplotlib==3.8.3
+seaborn==0.13.2

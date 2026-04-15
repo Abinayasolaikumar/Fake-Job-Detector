@@ -37,6 +37,8 @@ Upload:
 - `frontend/`
 - `model/*.py` (code only)
 - `requirements.txt`
+- `requirements-train.txt` (optional, for trainers)
+- `.python-version` (needed for Render / consistent Python)
 - `.gitignore`
 - `README.md`
 
@@ -47,14 +49,21 @@ Do not upload:
 - `reports/` contents
 - `__pycache__/`
 
-## Deploy steps (Render/Railway style)
+## Deploy on Render (step-by-step)
 
-1. Push source code to GitHub.
-2. Create a new Web Service from the repo.
-3. Set build command:
-   `pip install -r requirements.txt`
-4. Set start command:
-   `python backend/app.py`
-5. Add env var (recommended):
-   `MODEL_URL=https://drive.google.com/uc?id=1cE0BzOZsffaK5kvCCK8Tv_qi-ZN-MrVZ`
-6. Deploy. On first boot, model is downloaded automatically if missing.
+Render’s default Python is **3.14.x**, which often breaks ML wheels (e.g. `scikit-learn`). This repo pins **3.11.11** via `.python-version` so installs use pre-built wheels.
+
+1. Push this repo to GitHub (include `.python-version` and `requirements.txt`).
+2. In [Render](https://render.com): **New** → **Web Service** → connect the repo.
+3. **Build command:** `pip install -r requirements.txt`
+4. **Start command:** `python backend/app.py` (uses Render’s `PORT` automatically)
+5. **Environment variables** (recommended):
+   - `MODEL_URL` = `https://drive.google.com/uc?id=1cE0BzOZsffaK5kvCCK8Tv_qi-ZN-MrVZ`
+   - If Render still picks Python 3.14, set `PYTHON_VERSION` = `3.11.11` ([docs](https://render.com/docs/python-version)).
+6. Deploy. First boot may be slow (PyTorch + model download).
+
+### Training locally (optional)
+
+Training script needs extra packages:
+
+`pip install -r requirements-train.txt`
